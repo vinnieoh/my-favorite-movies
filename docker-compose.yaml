@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  pg:
+    build: 
+      dockerfile: ./api/docker/db.Dockerfile
+      context: .
+    image: vinnioh/pg_movie
+    container_name: pg
+    ports: 
+      - "5432:5432"
+    networks: 
+      - nwmovie
+    volumes: 
+      - pgdata:/var/lib/postgresql/data/
+
+  api:
+    build:
+      dockerfile: ./api/docker/api.Dockerfile
+      context: .
+    image: vinnieoh/api_movie
+    container_name: api_movie
+    ports: 
+      - "8000:8000"
+    networks: 
+      - nwmovie
+    depends_on:
+      - "pg"
+
+  # frontend:
+  #   build:
+  #     dockerfile: ./frontend/Dockerfile
+  #     context: .
+  #   image: vinnieoh/frontend_movie
+  #   container_name: frontend_movie
+  #   ports: 
+  #     - "5173:5173"
+  #   networks: 
+  #     - nwmovie
+    
+
+networks: 
+  nwmovie:
+    driver: bridge
+
+volumes: 
+  pgdata:
