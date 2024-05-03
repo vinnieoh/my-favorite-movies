@@ -15,18 +15,18 @@ services:
     volumes: 
       - pgdata:/var/lib/postgresql/data/
 
-  api:
-    build:
-      dockerfile: ./api/docker/api.Dockerfile
-      context: .
-    image: vinnieoh/api_movie
-    container_name: api_movie
-    ports: 
-      - "8000:8000"
-    networks: 
-      - nwmovie
-    depends_on:
-      - "pg"
+  # api:
+  #   build:
+  #     dockerfile: ./api/docker/api.Dockerfile
+  #     context: .
+  #   image: vinnieoh/api_movie
+  #   container_name: api_movie
+  #   ports: 
+  #     - "8000:8000"
+  #   networks: 
+  #     - nwmovie
+  #   depends_on:
+  #     - "pg"
 
   # frontend:
   #   build:
