@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from app.config.configs import settings
@@ -12,3 +13,6 @@ class UsuarioModel(settings.DBBaseModel):
     username = Column(String, nullable=False, unique=True, index=True)
     email = Column(String, nullable=False, unique=True, index=True)
     senha = Column(String, nullable=False)
+
+    # Relacionamento com comentários
+    comments = relationship("CommentModel", back_populates="user")
