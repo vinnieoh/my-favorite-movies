@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, Date, Text, Float
+from sqlalchemy import Column, String, Integer, Boolean, Text, Float
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from app.config.configs import settings
@@ -17,16 +17,3 @@ class BaseMediaModel(settings.DBBaseModel):
     poster_path = Column(String, nullable=True)
     is_adult = Column(Boolean, default=False)
 
-class TVModel(BaseMediaModel):
-    __tablename__ = 'tv_shows'
-    name = Column(String, nullable=False)
-    original_name = Column(String, nullable=True)
-    first_air_date = Column(Date, nullable=True)
-    origin_country = Column(String, nullable=True)
-
-class MovieModel(BaseMediaModel):
-    __tablename__ = 'movies'
-    title = Column(String, nullable=False)
-    original_title = Column(String, nullable=True)
-    release_date = Column(Date, nullable=True)
-    video = Column(Boolean, default=False)

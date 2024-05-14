@@ -1,4 +1,6 @@
-from sqlalchemy import Column, String, Date
+from sqlalchemy import Column, String, Date, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from app.models.base_media_model import BaseMediaModel
 
@@ -8,3 +10,7 @@ class TVModel(BaseMediaModel):
     original_name = Column(String, nullable=True)
     first_air_date = Column(Date, nullable=True)
     origin_country = Column(String, nullable=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('usuarios.id'))  # Chave estrangeira
+
+    # Relacionamento com usuário
+    user = relationship("UsuarioModel", back_populates="tv_shows")

@@ -6,6 +6,8 @@ from app.config.configs import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
+
+
 # Cors Config
 origins = ["*"]
 

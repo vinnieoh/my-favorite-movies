@@ -16,3 +16,9 @@ class UsuarioModel(settings.DBBaseModel):
 
     # Relacionamento com comentários
     comments = relationship("CommentModel", back_populates="user")
+    
+    # Relacionamento com filmes
+    movies = relationship("MovieModel", back_populates="user")
+    
+    # Relacionamento com programas de TV
+    tv_shows = relationship("TVModel", back_populates="user")
