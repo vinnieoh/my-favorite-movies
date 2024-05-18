@@ -1,6 +1,5 @@
 
 services:
-
   pg:
     build: 
       dockerfile: ./api/docker/db.Dockerfile
@@ -14,6 +13,19 @@ services:
     volumes: 
       - pgdata:/var/lib/postgresql/data/
 
+  redis:
+    build: 
+      dockerfile: ./api/docker/redis.Dockerfile
+      context: .
+    image: vinnieoh/redis_movie
+    container_name: redis
+    ports: 
+      - "6379:6379"
+    networks: 
+      - nwmovie
+    volumes:
+      - redisdata:/data
+
   # api:
   #   build:
   #     dockerfile: ./api/docker/api.Dockerfile
@@ -26,6 +38,7 @@ services:
   #     - nwmovie
   #   depends_on:
   #     - "pg"
+  #     - "redis"
 
   # frontend:
   #   build:
@@ -37,7 +50,6 @@ services:
   #     - "5173:5173"
   #   networks: 
   #     - nwmovie
-    
 
 networks: 
   nwmovie:
@@ -45,3 +57,4 @@ networks:
 
 volumes: 
   pgdata:
+  redisdata:
