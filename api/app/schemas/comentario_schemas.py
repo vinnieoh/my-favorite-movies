@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, conint, validator
+from pydantic import BaseModel, validator
 from datetime import datetime
 from enum import Enum as PyEnum
 from typing import Optional
