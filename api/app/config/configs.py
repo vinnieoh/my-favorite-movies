@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     HOST_REDIS: str = _config_env.get("HOST_REDIS", "default_redis_host")
     PORT_REDIS: str = _config_env.get("PORT_REDIS", "default_redis_port")
     DB_REDIS: str = _config_env.get("DB_REDIS", "default_redis_db")
+    REDIS_EXPIRATION_TIME_24H: int = 24 * 60 * 60  # 24 horas em segundos
     
     class Config:
         case_sensitive = True
