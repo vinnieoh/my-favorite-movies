@@ -28,8 +28,8 @@ Este projeto é um sistema de gerenciamento de filmes e séries favoritos, onde 
 
 1. Clone o repositório:
    ```sh
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+   git clone https://github.com/vinnieoh/my-favorite-movies.git
+   cd my-favorite-movies
 
 2. Crie o arquivo .env para o backend a partir do exemplo fornecido:
      ```sh
