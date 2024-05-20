@@ -1,5 +1,6 @@
 import httpx
 from app.config.configs import settings
+from app.config.config_redis import redis_repository
 
 
 AUTHORIZATION = f"Bearer {settings.API_MOVIE}"

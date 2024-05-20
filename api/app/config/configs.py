@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     # Configuração de expiração de token
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 1 semana
     
+    # Redis Configs
+    HOST_REDIS: str = _config_env.get("HOST_REDIS", "default_redis_host")
+    PORT_REDIS: str = _config_env.get("PORT_REDIS", "default_redis_port")
+    DB_REDIS: str = _config_env.get("DB_REDIS", "default_redis_db")
+    
     class Config:
         case_sensitive = True
 
