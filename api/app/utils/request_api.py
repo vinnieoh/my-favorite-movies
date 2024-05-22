@@ -1,3 +1,4 @@
+import json
 import httpx
 from fastapi import HTTPException
 from app.config.configs import settings
@@ -22,7 +23,7 @@ def request_trading_all_week_br():
     cached_data = redis_repository.get(cache_key)
     
     if cached_data:
-        return cached_data
+        return json.loads(cached_data) 
     
     response = httpx.get(url, headers=headers)
     
@@ -40,8 +41,9 @@ def request_trading_all_day_br():
     url = f"{BASE_URL}trending/all/day?language=pt-BR"
     
     cached_data = redis_repository.get(cache_key)
+    
     if cached_data:
-        return cached_data
+        return json.loads(cached_data) 
     
     response = httpx.get(url, headers=headers)
     
@@ -54,7 +56,7 @@ def request_trading_all_day_br():
     
 
 
-def request_search_conteudo(conteudo: str = 'american dad'):
+def request_search_conteudo(conteudo: str):
     cache_key = f"search_{conteudo}"
     url = f"{BASE_URL}search/multi?query={conteudo}&include_adult=false&language=pt-BR&page=1"
     
@@ -73,25 +75,6 @@ def request_search_conteudo(conteudo: str = 'american dad'):
         raise HTTPException(status_code=response.status_code, detail="Erro ao acessar a API")
    
 
-def request_find_by_id(id: int):
-    cache_key = f"movie_{id}"
-    url = f"{BASE_URL}movie/{id}?language=pt-BR"
-    
-    cached_data = redis_repository.get(cache_key)
-    
-    if cached_data:
-        return cached_data
-    
-    response = httpx.get(url, headers=headers)
-    
-    if response.is_success:
-        data = response.json()
-        redis_repository.insert(cache_key, data)
-        return data
-    else:
-        raise HTTPException(status_code=response.status_code, detail="Erro ao acessar a API")
-
-
 def request_movie_id(id: int):
     cache_key = f"movie_{id}"
     url = f"{BASE_URL}movie/{id}?language=pt-BR"
@@ -99,7 +82,7 @@ def request_movie_id(id: int):
     cached_data = redis_repository.get(cache_key)
     
     if cached_data:
-        return cached_data
+        return json.loads(cached_data)
     
     response = httpx.get(url, headers=headers)
     
@@ -118,7 +101,7 @@ def request_tv_show_id(id: int):
     cached_data = redis_repository.get(cache_key)
     
     if cached_data:
-        return cached_data
+        return json.loads(cached_data)
     
     response = httpx.get(url, headers=headers)
     
