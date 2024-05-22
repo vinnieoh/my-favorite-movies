@@ -18,10 +18,9 @@ class MovieBaseSchema(BaseModel):
     original_title: Optional[str] = None
     release_date: Optional[date] = None
     video: Optional[bool] = False
-    user_id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class MovieCreateSchema(MovieBaseSchema):
     pass
@@ -44,10 +43,10 @@ class MovieUpdateSchema(BaseModel):
     user_id: Optional[UUID] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class MovieResponseSchema(MovieBaseSchema):
     id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True

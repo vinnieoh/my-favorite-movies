@@ -25,7 +25,7 @@ class CommentBaseSchema(BaseModel):
         return v
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         use_enum_values = True  # Serialize enums as their values
 
 class CommentCreateSchema(CommentBaseSchema):
@@ -44,7 +44,7 @@ class CommentUpdateSchema(BaseModel):
         return v
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         use_enum_values = True
 
 class CommentResponseSchema(CommentBaseSchema):
@@ -53,5 +53,5 @@ class CommentResponseSchema(CommentBaseSchema):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         use_enum_values = True

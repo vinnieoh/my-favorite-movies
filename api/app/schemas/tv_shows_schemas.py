@@ -18,10 +18,9 @@ class TVBaseSchema(BaseModel):
     original_name: Optional[str] = None
     first_air_date: Optional[date] = None
     origin_country: Optional[str] = None
-    user_id: UUID
-
+    
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TVCreateSchema(TVBaseSchema):
     pass
@@ -44,10 +43,10 @@ class TVUpdateSchema(BaseModel):
     user_id: Optional[UUID] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TVResponseSchema(TVBaseSchema):
     id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True

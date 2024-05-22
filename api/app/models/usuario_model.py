@@ -4,6 +4,10 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from app.config.configs import settings
 
+from app.models.movie_model import MovieModel
+from app.models.tv_shows_model import TVModel
+from app.models.comentario_model import CommentModel
+
 class UsuarioModel(settings.DBBaseModel):
     __tablename__ = 'usuarios'
 

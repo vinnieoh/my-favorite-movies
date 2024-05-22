@@ -12,7 +12,7 @@ from .configs import settings
 from app.models.usuario_model import UsuarioModel
 
 class TokenData(BaseModel):
-    user_id: Optional[int] = None
+    user_id: Optional[str] = None
 
 async def get_session() -> Generator: # type: ignore
     session: AsyncSession = Session()
@@ -40,7 +40,7 @@ async def decode_token(token: str) -> TokenData:
         user_id: str = payload.get("sub")
         if user_id is None:
             raise create_credential_exception()
-        return TokenData(user_id=int(user_id))
+        return TokenData(user_id=str(user_id))
     except JWTError:
         raise create_credential_exception()
 
