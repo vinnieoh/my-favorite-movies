@@ -1,5 +1,5 @@
-from app.config.configs import settings
 from app.config.database import engine
+from app.config.configs import settings
 import asyncio
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -13,7 +13,7 @@ async def create_tables() -> None:
     async with engine.begin() as conn:
         try:
             # Drop all tables first (comment out if you want to keep existing data)
-            await conn.run_sync(settings.DBBaseModel.metadata.drop_all)
+            #await conn.run_sync(settings.DBBaseModel.metadata.drop_all)
             await conn.run_sync(settings.DBBaseModel.metadata.create_all)
             print('Tabelas criadas com sucesso.')
         except SQLAlchemyError as e:
