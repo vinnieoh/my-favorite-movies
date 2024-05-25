@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ signed: Boolean(true), user, Login, Logout }}>
+    <AuthContext.Provider value={{ signed: Boolean(false), user, Login, Logout }}>
       {children}
     </AuthContext.Provider>
   );
