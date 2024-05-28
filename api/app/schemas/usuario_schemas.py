@@ -16,7 +16,8 @@ class UsuarioSchemaBase(BaseModel):
 
 class UsuarioSchemaCreate(UsuarioSchemaBase):
     senha: str
-
+    
+    
 class UsuarioSchemaUpdate(BaseModel):
     firstName: Optional[str] = None
     lastName: Optional[str] = None
@@ -38,3 +39,7 @@ class UsuarioIdSchemas(UsuarioSchemaBase):
         json_encoders = {
             uuid.UUID: lambda v: str(v),  # Codifica UUIDs como strings
         }
+
+
+class UsuarioSchemaEmail(UsuarioIdSchemas):
+    email: EmailStr

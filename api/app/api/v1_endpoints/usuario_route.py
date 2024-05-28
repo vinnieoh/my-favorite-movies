@@ -3,13 +3,14 @@ from typing import List, Optional, Any
 from fastapi import APIRouter, status, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
+from sqlalchemy.sql import text
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 
 from app.models.usuario_model import UsuarioModel
-from app.schemas.usuario_schemas import UsuarioSchemaBase, UsuarioSchemaCreate, UsuarioSchemaUpdate, UsuarioIdSchemas
+from app.schemas.usuario_schemas import UsuarioSchemaBase, UsuarioSchemaCreate, UsuarioSchemaUpdate, UsuarioIdSchemas, UsuarioSchemaEmail
 from app.config.dependency import get_current_user, get_session
 from app.config.security_password import gerar_hash_senha
 from app.config.auth import autenticar, criar_token_acesso
@@ -53,6 +54,35 @@ async def post_usuario(usuario: UsuarioSchemaCreate, db: AsyncSession = Depends(
             )
 
 
+@router.get('/id/{usuario_id}', response_model=UsuarioSchemaBase, status_code=status.HTTP_200_OK)
+async def get_usuario_id(usuario_id: str, db: AsyncSession = Depends(get_session)):
+    async with db as session:
+        query = select(UsuarioModel).filter(UsuarioModel.id == usuario_id)
+        result = await session.execute(query)
+        usuario: UsuarioSchemaBase = result.scalars().unique().one_or_none()
+
+        if usuario:
+            return usuario
+        else:
+            raise HTTPException(detail='Usuário não encontrado.',
+                                status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.get('/{email_id}', response_model=UsuarioSchemaEmail, status_code=status.HTTP_200_OK)
+async def get_usuario_email(email_id: str, db: AsyncSession = Depends(get_session)):
+    async with db as session:
+        
+        query_email = select(UsuarioModel).filter(UsuarioModel.email == str(email_id.replace("%40", "@")))
+        result = await session.execute(query_email)
+        usuario: UsuarioSchemaEmail = result.scalars().unique().one_or_none()
+
+        if usuario:
+            return usuario
+        else:
+            raise HTTPException(detail='Usuário não encontrado.',
+                                status_code=status.HTTP_404_NOT_FOUND)
+
+
 # GET Usuarios
 @router.get('/', response_model=List[UsuarioIdSchemas])
 async def get_usuarios(db: AsyncSession = Depends(get_session)):
@@ -63,20 +93,6 @@ async def get_usuarios(db: AsyncSession = Depends(get_session)):
 
         return usuarios
 
-@router.get('/{usuario_id}', response_model=UsuarioIdSchemas)
-async def get_usuario(usuario_id: str, db: AsyncSession = Depends(get_session)):
-    async with db as session:
-        query = select(UsuarioModel).where(UsuarioModel.id == usuario_id)
-        result = await session.execute(query)
-        usuario = result.scalars().first()
-
-        if not usuario:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Usuário não encontrado."
-            )
-
-        return usuario
 
 # PUT Usuario
 @router.put('/{usuario_id}', response_model=UsuarioSchemaBase, status_code=status.HTTP_202_ACCEPTED)
