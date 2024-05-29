@@ -54,7 +54,7 @@ async def post_usuario(usuario: UsuarioSchemaCreate, db: AsyncSession = Depends(
             )
 
 
-@router.get('/id/{usuario_id}', response_model=UsuarioSchemaBase, status_code=status.HTTP_200_OK)
+@router.get('/usario-id/{usuario_id}', response_model=UsuarioSchemaBase, status_code=status.HTTP_200_OK)
 async def get_usuario_id(usuario_id: str, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(UsuarioModel).filter(UsuarioModel.id == usuario_id)
@@ -68,7 +68,7 @@ async def get_usuario_id(usuario_id: str, db: AsyncSession = Depends(get_session
                                 status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.get('/{email_id}', response_model=UsuarioSchemaEmail, status_code=status.HTTP_200_OK)
+@router.get('/usuario-email/{email_id}', response_model=UsuarioSchemaEmail, status_code=status.HTTP_200_OK)
 async def get_usuario_email(email_id: str, db: AsyncSession = Depends(get_session)):
     async with db as session:
         
