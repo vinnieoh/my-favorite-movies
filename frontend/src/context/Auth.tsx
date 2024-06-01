@@ -51,8 +51,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.data);
       api.defaults.headers.Authorization = `Bearer ${response.data.token}`;
 
+
       localStorage.setItem('@App:user', JSON.stringify(response.data));
       localStorage.setItem('@App:token', JSON.stringify(response.data.token));
+
+      console.log(localStorage)
 
       setSigned(true); // Usuário está autenticado
     } catch (error) {

@@ -25,10 +25,17 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     if not usuario:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Dados de acesso incorretos.')
+        
+    response_content = {
+        "id": str(usuario.id),  # Converte o UUID para string
+        "username": usuario.username,
+        "email": usuario.email,
+        "token": criar_token_acesso(sub=usuario.id),
+        "token_type": "bearer"
+    }
 
-    return JSONResponse(content={"access_token": criar_token_acesso(sub=usuario.id), 
-                        "token_type": "bearer"}, status_code=status.HTTP_200_OK)
-
+    return JSONResponse(content=response_content, status_code=status.HTTP_200_OK)
+    
 
 # POST / Signup
 @router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UsuarioSchemaBase)
