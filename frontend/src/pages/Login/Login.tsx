@@ -32,22 +32,21 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col md:flex-row h-screen">
       <div
-        className="hidden sm:block sm:w-1/3 md:w-1/2 bg-no-repeat bg-center"
+        className="hidden sm:block sm:w-1/3 md:w-1/2 bg-no-repeat bg-center bg-cover"
         style={{
           backgroundImage: 'url(./src/assets/img/filme_login.png)',
-          backgroundSize: '100%' 
         }}
       ></div>
-      <div className="w-full sm:w-2/3 md:w-1/2 bg-white">
-        <div className="flex flex-col items-center justify-center py-8 px-4">
+      <div className="w-full sm:w-2/3 md:w-1/2 bg-white flex justify-center items-center">
+        <div className="w-full max-w-md px-4">
           <div className="flex items-center justify-center mb-4">
             {/* Substitua com um ícone ou imagem */}
             <div className="w-12 h-12 bg-secondary-main rounded-full"></div>
           </div>
-          <h1 className="text-xl font-semibold mb-2">Sign in</h1>
-          <form className="w-full max-w-md" onSubmit={handleLogin}>
+          <h1 className="text-xl font-semibold mb-2 text-center">Sign in</h1>
+          <form className="w-full" onSubmit={handleLogin}>
             <input className="w-full px-3 py-2 border border-gray-300 rounded mt-1 mb-3" type="email" placeholder="Email Address" name="email" value={formData.email} onChange={handleChange} />
             <input className="w-full px-3 py-2 border border-gray-300 rounded mt-1 mb-3" type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} />
             <div className="flex items-center justify-between mt-2 mb-4">
@@ -66,6 +65,7 @@ const Login: React.FC = () => {
       </div>
     </div>
   );
+
 };
 
 export default Login;
