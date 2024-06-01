@@ -9,6 +9,8 @@ const SignRoutes: React.FC = () => {
       <Componets.NavbarDes />
       <Routes>
         <Route path="/" element={<Pages.Home />} />
+        <Route path="/movie/:id" element={<Pages.MovieDetail />} />
+        <Route path="/tvshow/:id" element={<Pages.TVShowDetail />} />
         <Route path="/login" element={<Pages.Login />} />
         <Route path="/registra-usuario" element={<Pages.RegistraUsuario />} />
         <Route path="/recupera-senha" element={<Pages.RecuperarSenha />} />

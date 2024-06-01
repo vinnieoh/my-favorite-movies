@@ -9,6 +9,8 @@ const OtherRoutes: React.FC = () => {
     <Componets.Navbar />
     <Routes>
       <Route path="/" element={<Pages.Home/>}/>
+      <Route path="/movie/:id" element={<Pages.MovieDetail />} />
+      <Route path="/tvshow/:id" element={<Pages.TVShowDetail />} />
       <Route path="/pesquisa-movie" element={<Pages.Search/>}/>
       <Route path="/settings" element={<Pages.Settings/>}/>
       <Route path="/my-movies" element={<Pages.MyMovies/>}/>

@@ -5,6 +5,8 @@ import RegistraUsuario from "./RegistraUsuario/RegistraUsuario";
 import Search from "./Search/Search";
 import Settings from "./SettingsPage/Settings";
 import MyMovies from "./MyMovies/Movies";
+import TVShowDetail from "./Home/TVShowDetail";
+import MovieDetail from "./Home/MovieDetail";
 
 
 export const Pages = {
@@ -14,5 +16,7 @@ export const Pages = {
     RegistraUsuario,
     Search,
     Settings,
-    MyMovies
+    MyMovies,
+    TVShowDetail,
+    MovieDetail
 }
