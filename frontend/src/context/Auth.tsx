@@ -15,7 +15,7 @@ interface UserData {
 interface AuthContextData {
   signed: boolean;
   user: UserData | null;
-  Login(data: { email: string; password: string }): Promise<void>;
+  LoginApi(data: { email: string; password: string }): Promise<void>;
   Logout(): void;
 }
 
@@ -36,12 +36,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  async function Login(data: { email: string; password: string }): Promise<void> {
+  async function LoginApi(data: { email: string; password: string }): Promise<void> {
     try {
-      const response = await api.post('/api/v1/login-api/', {
-        email: data.email,
-        password: data.password,
-      });
+      const response = await api.post(
+        '/usuario/login',
+        `username=${data.email}&password=${data.password}`,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
 
       setUser(response.data);
       api.defaults.headers.Authorization = `Bearer ${response.data.token}`;
@@ -53,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Erro ao fazer login:', error);
     }
-  }
+}
 
   function Logout() {
     setUser(null);
@@ -63,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ signed: Boolean(false), user, Login, Logout }}>
+    <AuthContext.Provider value={{ signed, user, LoginApi, Logout }}>
       {children}
     </AuthContext.Provider>
   );

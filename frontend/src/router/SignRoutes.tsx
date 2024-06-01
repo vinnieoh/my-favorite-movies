@@ -1,15 +1,14 @@
 import React from 'react';
-import {Route, Routes } from 'react-router-dom';
-import { Pages } from "../pages/pages";
- 
+import { Route, Routes } from 'react-router-dom';
+import { Pages } from '../pages/pages';
 
 const SignRoutes: React.FC = () => {
   return (  
     <Routes>
-      <Route path="/" element={<Pages.Home/>}/>
+      <Route path="/" element={<Pages.Home />} />
       <Route path="/login" element={<Pages.Login />} />
-      <Route path="/registra-usario" element={<Pages.RegistraUsuario />} />   
-      <Route path="/recupera-senha" element={<Pages.RecuperarSenha />} />  
+      <Route path="/registra-usuario" element={<Pages.RegistraUsuario />} />
+      <Route path="/recupera-senha" element={<Pages.RecuperarSenha />} />
     </Routes>
   );
 };

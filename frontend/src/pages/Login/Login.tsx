@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import api from '../../service/BaseUrlApi';
-import { useNavigate } from 'react-router-dom';
+import { useAuth }   from "../../context/Auth";
 
 interface FormData {
   email: string;
@@ -12,8 +11,6 @@ const Login: React.FC = () => {
     email: '',
     password: '',
   });
-  const [isErr, setIsErr] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({
@@ -21,30 +18,15 @@ const Login: React.FC = () => {
       [e.target.name]: e.target.value,
     });
   };
+  const [isErr, setIsErr] = useState(false);
+  const { LoginApi } = useAuth();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-
     try {
-      const response = await api.post(
-        'http://127.0.0.1:8000/api/v1/usuario/login',
-        `username=${formData.email}&password=${formData.password}`,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
-
-      
-      	//Fazer buscar o usuario por email na api
-
-      console.log(response.data.access_token)
-
-      navigate('/');
-
+      await LoginApi({ email: formData.email, password: formData.password });
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Erro ao fazer login:', error);
       setIsErr(true);
     }
   };
@@ -76,10 +58,10 @@ const Login: React.FC = () => {
             </div>
             <button className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded mt-3 mb-2" type="submit">Sign In</button>
             <div className="text-center">
-              <a href="/registra-usuario" className="text-blue-500 hover:underline">Don't have an account? Sign Up</a>
+              <a href="/registra-usuario" className="text-blue-500 hover:underline">Não tem uma conta? Inscrever-se</a>
             </div>
           </form>
-          {isErr && <div className="text-red-500 mt-2">Login failed. Please check your credentials and try again.</div>}
+          {isErr && <div className="text-red-500 mt-2">Falha no login. Verifique suas credenciais e tente novamente.</div>}
         </div>
       </div>
     </div>
