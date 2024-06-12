@@ -5,14 +5,13 @@ FROM node:18-alpine
 WORKDIR /src
 
 # Copy package.json and package-lock.json
-COPY ./frontend/package.json .
-COPY ./frontend/package-lock.json .
+COPY ./frontend/package.json ./frontend/package-lock.json ./
 
 # Install dependencies
 RUN npm ci
 
 # Copy the project files
-COPY . .
+COPY ./frontend .
 
 # Build the Vite.js project
 RUN npm run build
