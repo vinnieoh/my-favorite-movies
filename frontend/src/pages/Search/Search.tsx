@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import url_movie from "../../service/BaseUrlMovie"
+import url_api from "../../service/BaseUrlApi"
 
 interface Movie {
   imdbID: string;
@@ -42,7 +42,7 @@ function Search() {
     const url = `?s=${query}&apikey=${apiKey}`;
 
     try {
-      const response = await url_movie.get(url);
+      const response = await url_api.get(url);
       setMovies(response.data.Search);
       setSelectedMovieDetails(null); // Resetar detalhes do filme
     } catch(err) {
@@ -55,7 +55,7 @@ function Search() {
     const url = `?i=${imdbID}&apikey=${apiKey}`;
 
     try {
-      const response = await url_movie.get(url);
+      const response = await url_api.get(url);
       setSelectedMovieDetails(response.data);
     } catch(err) {
       console.error("Erro ao buscar detalhes do filme:", err);
