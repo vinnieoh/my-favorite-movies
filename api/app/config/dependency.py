@@ -1,7 +1,7 @@
-from typing import  Generator, Optional
+from typing import Generator, Optional
 
 from fastapi import Depends, HTTPException, status
-from jose import jwt, JWTError
+import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from pydantic import BaseModel
@@ -41,7 +41,13 @@ async def decode_token(token: str) -> TokenData:
         if user_id is None:
             raise create_credential_exception()
         return TokenData(user_id=str(user_id))
-    except JWTError:
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token expirado",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    except jwt.InvalidTokenError:
         raise create_credential_exception()
 
 async def get_current_user(db: AsyncSession = Depends(get_session), token: str = Depends(oauth2_schema)) -> UsuarioModel:
