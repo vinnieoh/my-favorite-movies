@@ -3,9 +3,13 @@ from httpx import AsyncClient
 from main import app
 from app.config.configs import settings
 
+
+BASE_URL = "http://localhost:8000/"
+
+
 @pytest.mark.asyncio
 async def test_create_user():
-    async with AsyncClient(app=app, base_url='http://localhost:8000/') as ac:
+    async with AsyncClient(app=app, base_url=BASE_URL) as ac:
         response = await ac.post(
             f"{settings.API_V1_STR}/usuario/signup",
             json={
@@ -21,7 +25,7 @@ async def test_create_user():
 
 @pytest.mark.asyncio
 async def test_get_user():
-    async with AsyncClient(app=app, base_url='http://localhost:8000/') as ac:
+    async with AsyncClient(app=app, base_url=BASE_URL) as ac:
         create_response = await ac.post(
             f"{settings.API_V1_STR}/usuario/signup",
             json={
@@ -58,7 +62,7 @@ async def test_get_user():
 
 @pytest.mark.asyncio
 async def test_put_user():
-        async with AsyncClient(app=app, base_url='http://localhost:8000/') as ac:
+        async with AsyncClient(app=app, base_url=BASE_URL) as ac:
             create_response = await ac.post(
                 f"{settings.API_V1_STR}/usuario/signup",
                 json={
@@ -105,7 +109,7 @@ async def test_put_user():
         
 @pytest.mark.asyncio
 async def test_del_user():
-    async with AsyncClient(app=app, base_url='http://localhost:8000/') as ac:
+    async with AsyncClient(app=app, base_url=BASE_URL) as ac:
         create_response = await ac.post(
             f"{settings.API_V1_STR}/usuario/signup",
             json={
