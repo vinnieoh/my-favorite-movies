@@ -26,34 +26,34 @@ services:
     volumes:
       - redisdata:/data
 
-  # api:
-  #   build:
-  #     dockerfile: ./api/docker/api.Dockerfile
-  #     context: .
-  #   image: vinnieoh/api_movie
-  #   container_name: api_movie
-  #   environment:
-  #     - DB_URL=postgresql+asyncpg://postgres:root12345@pg:5432/movie
-  #     - JWT_SECRET=F3gw2q1CaFfw3M-vwmLvvaU6LUFmFtkDNjrH8PRrg-o
-  #     - ALGORITHM=HS256
-  #   ports: 
-  #     - "8000:8000"
-  #   networks: 
-  #     - nwmovie
-  #   depends_on:
-  #     - "pg"
-  #     - "redis"
+  api:
+    build:
+      dockerfile: ./api/docker/api.Dockerfile
+      context: .
+    image: vinnieoh/api_movie
+    container_name: api_movie
+    environment:
+      - DB_URL=postgresql+asyncpg://postgres:root12345@pg:5432/movie
+      - JWT_SECRET=F3gw2q1CaFfw3M-vwmLvvaU6LUFmFtkDNjrH8PRrg-o
+      - ALGORITHM=HS256
+    ports: 
+      - "8000:8000"
+    networks: 
+      - nwmovie
+    depends_on:
+      - "pg"
+      - "redis"
 
-  # frontend:
-  #   build:
-  #     dockerfile: ./frontend/frontend.Dockerfile
-  #     context: .
-  #   image: vinnieoh/frontend_movie
-  #   container_name: frontend_movie
-  #   ports: 
-  #     - "5173:5173"
-  #   networks: 
-  #     - nwmovie
+  frontend:
+    build:
+      dockerfile: ./frontend/frontend.Dockerfile
+      context: .
+    image: vinnieoh/frontend_movie
+    container_name: frontend_movie
+    ports: 
+      - "5173:5173"
+    networks: 
+      - nwmovie
 
 networks: 
   nwmovie:
