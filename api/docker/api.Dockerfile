@@ -42,5 +42,5 @@ RUN python -m venv /venv && \
 EXPOSE 8000
 
 
-CMD ["sh", "-c", "/venv/bin/python ./create_tables_database.py && /venv/bin/python ./main.py"]
+CMD ["sh", "-c", "/venv/bin/python ./scripts/create_tables_database.py && /venv/bin/python ./main.py"]
 
