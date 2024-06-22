@@ -25,6 +25,8 @@ venv.bak/
 dist/
 build/
 
+htmlcov/
+
 # Arquivos temporários
 *.swp
 *.swo

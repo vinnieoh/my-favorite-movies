@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 from enum import Enum as PyEnum
 from typing import Optional
@@ -16,7 +16,7 @@ class CommentBaseSchema(BaseModel):
     content: str
     likes: Optional[int] = 0
 
-    @validator('likes', pre=True, always=True)
+    @field_validator('likes', mode='before')
     def validate_likes(cls, v):
         if v is None:
             return 0
@@ -35,7 +35,7 @@ class CommentUpdateSchema(BaseModel):
     content: Optional[str]
     likes: Optional[int] = 0
 
-    @validator('likes', pre=True, always=True)
+    @field_validator('likes', mode='before')
     def validate_likes(cls, v):
         if v is None:
             return 0

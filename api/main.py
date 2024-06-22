@@ -6,7 +6,10 @@ from app.config.configs import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
-
+# Definindo a rota raiz
+@app.get("/")
+async def read_root():
+    return {"message": "Hello World"}
 
 # Cors Config
 origins = ["*"]

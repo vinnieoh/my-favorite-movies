@@ -1,5 +1,5 @@
 from typing import ClassVar
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from pydantic_settings import BaseSettings
 from dotenv import dotenv_values
 
@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     PORT_REDIS: str = _config_env.get("PORT_REDIS", "default_redis_port")
     DB_REDIS: str = _config_env.get("DB_REDIS", "default_redis_db")
     REDIS_EXPIRATION_TIME_24H: int = 24 * 60 * 60  # 24 horas em segundos
+    
     
     class Config:
         case_sensitive = True
