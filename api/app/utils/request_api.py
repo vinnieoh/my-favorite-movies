@@ -63,7 +63,7 @@ def request_search_conteudo(conteudo: str):
     cached_data = redis_repository.get(cache_key)
     
     if cached_data:
-        return cached_data
+        return json.loads(cached_data) 
     
     response = httpx.get(url, headers=headers)
     
