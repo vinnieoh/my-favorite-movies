@@ -4,7 +4,7 @@ import api from '../../service/BaseUrlApi';
 import { useAuth } from '../../context/Auth';
 
 interface FavoriteContent {
-  id: number;
+  original_id: number;
   original_language: string;
   overview: string;
   popularity: number;
@@ -51,7 +51,7 @@ const MyMovies: React.FC = () => {
 
   const handleContentClick = (content: FavoriteContent) => {
     const type = content.name ? 'tvshow' : 'movie';
-    navigate(`/${type}/${content.id}`);
+    navigate(`/${type}/${content.original_id}`);
   };
 
   const handleDelete = async (content: FavoriteContent) => {
