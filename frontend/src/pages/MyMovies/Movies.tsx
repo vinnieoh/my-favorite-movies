@@ -4,7 +4,7 @@ import api from '../../service/BaseUrlApi';
 import { useAuth } from '../../context/Auth';
 
 interface FavoriteContent {
-  original_id: number;
+  id: number;
   original_language: string;
   overview: string;
   popularity: number;
@@ -51,7 +51,26 @@ const MyMovies: React.FC = () => {
 
   const handleContentClick = (content: FavoriteContent) => {
     const type = content.name ? 'tvshow' : 'movie';
-    navigate(`/${type}/${content.original_id}`);
+    navigate(`/${type}/${content.id}`);
+  };
+
+  const handleDelete = async (content: FavoriteContent) => {
+    if (user) {
+      const type = content.name ? 'tvshow' : 'movie';
+      const url = type === 'tvshow' ? `/conteudos/delete-tvshow/${content.id}` : `/conteudos/delete-filme/${content.id}`;
+
+      try {
+        await api.delete(url, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        // Remove o item do estado
+        setFavorites(favorites.filter(fav => fav.id !== content.id));
+      } catch (error) {
+        console.error('Erro ao deletar conteúdo:', error);
+      }
+    }
   };
 
   if (!favorites.length) {
@@ -66,13 +85,13 @@ const MyMovies: React.FC = () => {
           <div
             key={content.id}
             className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer transform transition duration-300 hover:scale-105 w-60"
-            onClick={() => handleContentClick(content)}
           >
             <div className="relative">
               <img
                 src={`https://image.tmdb.org/t/p/w500/${content.poster_path}`}
                 alt={content.title || content.name}
                 className="w-full h-auto object-cover rounded-lg mb-3"
+                onClick={() => handleContentClick(content)}
               />
               {content.vote_average !== undefined && (
                 <div className="absolute top-2 left-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded">
@@ -84,6 +103,12 @@ const MyMovies: React.FC = () => {
               <h3 className="font-semibold text-lg mb-1">{content.title || content.name}</h3>
               <p className="text-gray-700 text-sm mb-2">{content.release_date || content.first_air_date}</p>
               <p className="text-gray-600 text-xs line-clamp-3">{content.overview}</p>
+              <button
+                onClick={() => handleDelete(content)}
+                className="mt-4 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded shadow"
+              >
+                Deletar
+              </button>
             </div>
           </div>
         ))}
