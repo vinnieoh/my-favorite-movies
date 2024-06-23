@@ -37,7 +37,7 @@ async def get_trending_all_week_br():
     return resp
     
 
-@router.get('/trading-all-day-br')
+@router.get('/trending-all-day-br')
 async def get_trading_all_day_br():
     
     resp = request_trading_all_day_br()
