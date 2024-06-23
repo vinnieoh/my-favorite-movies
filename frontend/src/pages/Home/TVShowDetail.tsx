@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../service/BaseUrlApi';
+import { useAuth } from '../../context/Auth';
 
 interface RouteParams {
   id: string;
@@ -45,6 +46,7 @@ interface TVShow {
 const TVShowDetail: React.FC = () => {
   const [tvShow, setTvShow] = useState<TVShow | null>(null);
   const { id } = useParams<RouteParams>();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchTVShow = async () => {
@@ -58,6 +60,39 @@ const TVShowDetail: React.FC = () => {
 
     fetchTVShow();
   }, [id]);
+
+  const handleAddFavorite = async () => {
+    if (!tvShow || !user) return;
+
+    const tvShowData = {
+      original_id: tvShow.id,
+      original_language: tvShow.original_language,
+      overview: tvShow.overview,
+      popularity: tvShow.popularity,
+      vote_average: tvShow.vote_average,
+      vote_count: tvShow.vote_count,
+      genre_ids: tvShow.genres.map(genre => genre.id).join(','),
+      backdrop_path: tvShow.backdrop_path,
+      poster_path: tvShow.poster_path,
+      is_adult: tvShow.adult,
+      name: tvShow.name,
+      original_name: tvShow.original_name,
+      first_air_date: tvShow.first_air_date,
+      origin_country: tvShow.origin_country.join(','),
+    };
+
+    try {
+      await api.post('/conteudos/registra-tvshow', tvShowData, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      alert('Série adicionada aos favoritos com sucesso!');
+    } catch (error) {
+      console.error('Erro ao adicionar série aos favoritos:', error);
+      alert('Erro ao adicionar série aos favoritos.');
+    }
+  };
 
   if (!tvShow) {
     return <div>Loading...</div>;
@@ -94,6 +129,12 @@ const TVShowDetail: React.FC = () => {
               <li><strong>Production Countries:</strong> {tvShow.production_countries.map(country => country.name).join(', ')}</li>
               <li><strong>Networks:</strong> {tvShow.networks.map(network => network.name).join(', ')}</li>
             </ul>
+            <button
+              onClick={handleAddFavorite}
+              className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            >
+              Adicionar aos Favoritos
+            </button>
           </div>
         </div>
         <div className="md:w-2/3 md:pl-8">

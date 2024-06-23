@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../service/BaseUrlApi';
+import { useAuth } from '../../context/Auth'; // ajuste o caminho conforme necessário
 
 interface RouteParams {
   id: string;
@@ -38,6 +39,7 @@ interface Movie {
 const MovieDetail: React.FC = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const { id } = useParams<RouteParams>();
+  const { user } = useAuth(); // Pegue o usuário do contexto
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -51,6 +53,40 @@ const MovieDetail: React.FC = () => {
 
     fetchMovie();
   }, [id]);
+
+  const addToFavorites = async () => {
+    if (user && movie) {
+      const movieData = {
+        original_id: movie.id,
+        original_language: movie.original_language,
+        overview: movie.overview,
+        popularity: movie.popularity,
+        vote_average: movie.vote_average,
+        vote_count: movie.vote_count,
+        genre_ids: movie.genres.map(genre => genre.id).join(', '),
+        backdrop_path: movie.backdrop_path,
+        poster_path: movie.poster_path,
+        is_adult: movie.adult,
+        title: movie.title,
+        original_title: movie.original_title,
+        release_date: movie.release_date,
+        video: movie.video
+      };
+
+      try {
+        await api.post('/conteudos/registra-filme', movieData, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        alert('Filme adicionado aos favoritos com sucesso!');
+      } catch (error) {
+        console.error('Erro ao adicionar filme aos favoritos:', error);
+      }
+    } else {
+      alert('Você precisa estar logado para adicionar filmes aos favoritos.');
+    }
+  };
 
   if (!movie) {
     return <div>Loading...</div>;
@@ -85,6 +121,12 @@ const MovieDetail: React.FC = () => {
               <li><strong>Production Companies:</strong> {movie.production_companies.map(company => company.name).join(', ')}</li>
               <li><strong>Production Countries:</strong> {movie.production_countries.map(country => country.name).join(', ')}</li>
             </ul>
+            <button
+              onClick={addToFavorites}
+              className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Adicionar aos Favoritos
+            </button>
           </div>
         </div>
         <div className="md:w-2/3 md:pl-8">
