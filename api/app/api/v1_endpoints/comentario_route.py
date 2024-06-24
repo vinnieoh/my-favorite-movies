@@ -1,5 +1,7 @@
 from typing import List
 from uuid import UUID
+from datetime import datetime, timezone
+import pytz
 
 from fastapi import APIRouter, status, Depends, HTTPException
 
@@ -30,14 +32,19 @@ async def get_comments_by_media(media_id: int, db: AsyncSession = Depends(get_se
         return comentarios
 
 
+from datetime import datetime, timezone
+
 @router.post('/comentarios', status_code=status.HTTP_201_CREATED, response_model=CommentResponseSchema)
 async def create_comment(comment: CommentCreateSchema, db: AsyncSession = Depends(get_session), logado: UsuarioModel = Depends(get_current_user)):
+    
     novo_comentario = CommentModel(
         user_id=logado.id,
         media_id=comment.media_id,
         media_type=comment.media_type,
         content=comment.content,
-        likes=comment.likes
+        likes=comment.likes,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
     )
     
     async with db as session:
@@ -64,15 +71,21 @@ async def update_comment(comment_id: UUID, comment: CommentUpdateSchema, logado:
         if not comentario_up:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comentário não encontrado.')
 
+        # Log para depuração
+        print(f"Usuário logado ID: {logado.id}")
+        print(f"Comentário usuário ID: {comentario_up.user_id}")
+
         # Verificar se o usuário logado tem permissão para atualizar este comentário
         if logado.id != comentario_up.user_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Não autorizado a modificar este comentário.")
         
         # Atualização de campos condicional
-        if comment.content is not None:
-            comentario_up.content = comment.content
-        if comment.likes is not None:
-            comentario_up.likes = comment.likes
+        comentario_up.media_id = comment.media_id
+        comentario_up.media_type = comment.media_type
+        comentario_up.content = comment.content
+        comentario_up.likes = comment.likes
+
+        comentario_up.updated_at = datetime.utcnow()
         
         try:
             await session.commit()

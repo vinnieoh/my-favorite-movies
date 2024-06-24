@@ -43,8 +43,20 @@ interface TVShow {
   vote_count: number;
 }
 
+interface Comment {
+  id: string;
+  user_id: string;
+  media_id: number;
+  media_type: string;
+  content: string;
+  likes: number;
+  username?: string;  // Adicionado para exibição
+}
+
 const TVShowDetail: React.FC = () => {
   const [tvShow, setTvShow] = useState<TVShow | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState<string>('');
   const { id } = useParams<RouteParams>();
   const { user } = useAuth();
 
@@ -58,7 +70,34 @@ const TVShowDetail: React.FC = () => {
       }
     };
 
+    const fetchComments = async () => {
+      try {
+        const response = await api.get(`/comentario/comentarios/${id}`);
+        const commentsData = response.data;
+
+        const userIds = commentsData.map((comment: Comment) => comment.user_id);
+        const uniqueUserIds = [...new Set(userIds)];
+
+        const usersResponse = await api.get(`/usuario/`, {
+          params: {
+            ids: uniqueUserIds.join(','),
+          },
+        });
+
+        const users = usersResponse.data;
+        const commentsWithUsernames = commentsData.map((comment: Comment) => ({
+          ...comment,
+          username: users.find((user: any) => user.id === comment.user_id)?.username || 'Unknown',
+        }));
+
+        setComments(commentsWithUsernames);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
     fetchTVShow();
+    fetchComments();
   }, [id]);
 
   const handleAddFavorite = async () => {
@@ -91,6 +130,87 @@ const TVShowDetail: React.FC = () => {
     } catch (error) {
       console.error('Erro ao adicionar série aos favoritos:', error);
       alert('Erro ao adicionar série aos favoritos.');
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (user && newComment.trim()) {
+      const commentData = {
+        user_id: user.id,
+        media_id: Number(id),
+        media_type: 'tv_show',
+        content: newComment,
+        likes: 0,
+      };
+
+      try {
+        await api.post('/comentario/comentarios', commentData, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        setNewComment('');
+        const response = await api.get(`/comentario/comentarios/${id}`);
+        const commentsData = response.data;
+
+        const userIds = commentsData.map((comment: Comment) => comment.user_id);
+        const uniqueUserIds = [...new Set(userIds)];
+
+        const usersResponse = await api.get(`/usuario/`, {
+          params: {
+            ids: uniqueUserIds.join(','),
+          },
+        });
+
+        const users = usersResponse.data;
+        const commentsWithUsernames = commentsData.map((comment: Comment) => ({
+          ...comment,
+          username: users.find((user: any) => user.id === comment.user_id)?.username || 'Unknown',
+        }));
+
+        setComments(commentsWithUsernames);
+      } catch (error) {
+        console.error('Error adding comment:', error);
+      }
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (user) {
+      try {
+        await api.delete(`/comentario/comentarios/${commentId}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        setComments(comments.filter(comment => comment.id !== commentId));
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+      }
+    }
+  };
+
+  const handleLikeComment = async (commentId: string) => {
+    const comment = comments.find(comment => comment.id === commentId);
+    if (user && comment) {
+      try {
+        const response = await api.put(`/comentario/comentarios/${commentId}`, {
+          media_id: comment.media_id,
+          media_type: comment.media_type,
+          content: comment.content,
+          likes: comment.likes + 1,
+        }, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        if (response.status === 202) {
+          setComments(comments.map(c => c.id === commentId ? { ...c, likes: c.likes + 1 } : c));
+        }
+      } catch (error) {
+        console.error('Error liking comment:', error);
+      }
     }
   };
 
@@ -142,20 +262,65 @@ const TVShowDetail: React.FC = () => {
             <h2 className="text-2xl font-semibold mb-4">Overview</h2>
             <p className="text-gray-700">{tvShow.overview}</p>
           </div>
-          <div className="bg-white shadow-lg rounded-lg p-4 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Seasons</h2>
-            {tvShow.seasons.map(season => (
-              <div key={season.id} className="mb-4">
-                <h3 className="text-xl font-semibold">{season.name}</h3>
-                <img src={`https://image.tmdb.org/t/p/w500/${season.poster_path}`} alt={season.name} className="rounded-md mb-2 w-full md:w-1/3" />
-                <p className="text-gray-700">{season.overview}</p>
-                <ul className="text-gray-700">
-                  <li><strong>Air Date:</strong> {season.air_date}</li>
-                  <li><strong>Episode Count:</strong> {season.episode_count}</li>
-                  <li><strong>Vote Average:</strong> {season.vote_average}</li>
-                </ul>
-              </div>
-            ))}
+          {tvShow.seasons.length > 0 && (
+            <div className="bg-white shadow-lg rounded-lg p-4 mb-8">
+              <h2 className="text-2xl font-semibold mb-4">Seasons</h2>
+              {tvShow.seasons.map(season => (
+                <div key={season.id} className="mb-4">
+                  <h3 className="text-xl font-semibold">{season.name}</h3>
+                  <img src={`https://image.tmdb.org/t/p/w500/${season.poster_path}`} alt={season.name} className="rounded-md mb-2 w-full md:w-1/3" />
+                  <p className="text-gray-700">{season.overview}</p>
+                  <ul className="text-gray-700">
+                    <li><strong>Air Date:</strong> {season.air_date}</li>
+                    <li><strong>Episode Count:</strong> {season.episode_count}</li>
+                    <li><strong>Vote Average:</strong> {season.vote_average}</li>
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold mb-4">Comentários</h2>
+            <div className="mb-4">
+              <textarea
+                className="w-full p-2 border border-gray-300 rounded"
+                rows={4}
+                placeholder="Deixe seu comentário..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              ></textarea>
+              <button
+                onClick={handleAddComment}
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Adicionar Comentário
+              </button>
+            </div>
+            <div className="space-y-4">
+              {comments.map(comment => (
+                <div key={comment.id} className="bg-white shadow-lg rounded-lg p-4">
+                  <p className="text-gray-700 font-semibold">{comment.username}</p>
+                  <p className="text-gray-700">{comment.content}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-sm text-gray-500">Likes: {comment.likes}</span>
+                    <button
+                      onClick={() => handleLikeComment(comment.id)}
+                      className="text-sm text-blue-500 hover:underline"
+                    >
+                      Like
+                    </button>
+                    {user && user.id === comment.user_id && (
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="text-sm text-red-500 hover:underline"
+                      >
+                        Deletar
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

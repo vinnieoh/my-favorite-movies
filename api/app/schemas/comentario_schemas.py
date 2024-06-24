@@ -1,22 +1,16 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
-from enum import Enum as PyEnum
 from typing import Optional
 from uuid import UUID
 
-# Enum for media types (TV or Movie)
-class MediaType(PyEnum):
-    MOVIE = "movie"
-    TV_SHOW = "tv_show"
-
 class CommentBaseSchema(BaseModel):
     user_id: UUID
-    media_id: int
-    media_type: MediaType
+    media_type: str  # Usar string simples ao invés de enum
     content: str
+    media_id: int
     likes: Optional[int] = 0
 
-    @field_validator('likes', mode='before')
+    @validator('likes', pre=True)
     def validate_likes(cls, v):
         if v is None:
             return 0
@@ -24,9 +18,14 @@ class CommentBaseSchema(BaseModel):
             raise ValueError('likes must be greater than or equal to 0')
         return v
 
+    @validator('media_type')
+    def validate_media_type(cls, v):
+        if v not in ('movie', 'tv_show'):
+            raise ValueError("media_type must be 'movie' or 'tv_show'")
+        return v
+
     class Config:
         from_attributes = True
-        use_enum_values = True  # Serialize enums as their values
 
 class CommentCreateSchema(CommentBaseSchema):
     pass
@@ -35,7 +34,7 @@ class CommentUpdateSchema(BaseModel):
     content: Optional[str]
     likes: Optional[int] = 0
 
-    @field_validator('likes', mode='before')
+    @validator('likes', pre=True)
     def validate_likes(cls, v):
         if v is None:
             return 0
@@ -45,7 +44,6 @@ class CommentUpdateSchema(BaseModel):
 
     class Config:
         from_attributes = True
-        use_enum_values = True
 
 class CommentResponseSchema(CommentBaseSchema):
     id: UUID
@@ -54,4 +52,3 @@ class CommentResponseSchema(CommentBaseSchema):
 
     class Config:
         from_attributes = True
-        use_enum_values = True
