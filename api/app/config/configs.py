@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     DB_REDIS: str = _config_env.get("DB_REDIS", "default_redis_db")
     REDIS_EXPIRATION_TIME_24H: int = 24 * 60 * 60  # 24 horas em segundos
     
+    # Email Configs Log
+    EMAIL_lOG: str = _config_env.get("EMAIL_LOG", "default_email_log")
+    PASSWORD_LOG: str = _config_env.get("PASSWORD_LOG", "default_password_log")
+    EMAIL_SEND_LOG_01: str = _config_env.get("EMAIL_SEND_LOG_01", "default_email_send_log_01")
+    EMAIL_SEND_LOG_02: str = _config_env.get("EMAIL_SEND_LOG_02", "default_email_send_log_02")
+    
     
     class Config:
         case_sensitive = True

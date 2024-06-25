@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.api_config import api_router
-
 from app.config.configs import settings
+from app.config.logs_config import setup_logging
+
+# Configurar logging
+setup_logging()
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -13,12 +16,13 @@ async def read_root():
 
 # Cors Config
 origins = ["*"]
+# origins = ["https://your-frontend-domain.vercel.app"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
