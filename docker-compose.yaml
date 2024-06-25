@@ -44,16 +44,16 @@ services:
         - "pg"
         - "redis"
 
-  # frontend:
-  #     build:
-  #       dockerfile: ./frontend/frontend.Dockerfile
-  #       context: .
-  #     image: vinnieoh/frontend_movie
-  #     container_name: frontend_movie
-  #     ports: 
-  #       - "5173:5173"
-  #     networks: 
-  #       - nwmovie
+  frontend:
+      build:
+        dockerfile: ./frontend/frontend.Dockerfile
+        context: .
+      image: vinnieoh/frontend_movie
+      container_name: frontend_movie
+      ports: 
+        - "5173:5173"
+      networks: 
+        - nwmovie
 
 networks: 
   nwmovie:

@@ -32,8 +32,6 @@ async def get_comments_by_media(media_id: int, db: AsyncSession = Depends(get_se
         return comentarios
 
 
-from datetime import datetime, timezone
-
 @router.post('/comentarios', status_code=status.HTTP_201_CREATED, response_model=CommentResponseSchema)
 async def create_comment(comment: CommentCreateSchema, db: AsyncSession = Depends(get_session), logado: UsuarioModel = Depends(get_current_user)):
     
