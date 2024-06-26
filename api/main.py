@@ -15,8 +15,8 @@ async def read_root():
     return {"message": "Hello World"}
 
 # Cors Config
-origins = ["*"]
-# origins = ["https://your-frontend-domain.vercel.app"]
+#origins = ["*"]
+origins = ["https://my-favorite-movies-theta.vercel.app/"]
 
 app.add_middleware(
     CORSMiddleware,
